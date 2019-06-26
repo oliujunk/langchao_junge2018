@@ -6,6 +6,8 @@ const Subscription = require('egg').Subscription;
 const net = require('net');
 const port = 8888;
 const ip = '119.164.253.229';
+const userId = 463;
+const token = '76996141';
 
 class UpdateData extends Subscription {
   // 通过 schedule 属性来设置定时任务的执行间隔等配置
@@ -82,7 +84,7 @@ class UpdateData extends Subscription {
       return bytes;
     }
 
-    const res = await this.ctx.curl('http://115.28.187.9:7001/devicelist/412', {
+    const res = await this.ctx.curl(`http://115.28.187.9:7001/devicelist/${userId}`, {
       dataType: 'json',
     });
 
@@ -91,8 +93,6 @@ class UpdateData extends Subscription {
       const head = '8888';
       const xxbm = getRadomNum(8);
       const sbbh = '00000000';
-      // const token = '76996141';
-      const token = '59446439';
       const sjlx = '00';
       const bysj = '0000000000000000';
       const end = '0304';
