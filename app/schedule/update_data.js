@@ -8,7 +8,7 @@ const port = 8888;
 const ip = '119.164.253.229';
 const userId = 1045;
 const token = '52376242'; // token
-const sbbh = '20190610'; // ID号前缀
+const sbbh = '03260956'; // ID号前缀
 
 
 class UpdateData extends Subscription {
