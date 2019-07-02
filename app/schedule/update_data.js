@@ -6,7 +6,7 @@ const Subscription = require('egg').Subscription;
 const net = require('net');
 const port = 8888;
 const ip = '119.164.253.229';
-const userId = 1045;
+const userId = 1048;
 const token = '52376242'; // token
 const sbbh = '03260956'; // ID号前缀
 
