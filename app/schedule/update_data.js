@@ -52,7 +52,7 @@ class UpdateData extends Subscription {
         const deviceInfo = await this.ctx.curl(`http://115.28.187.9:7001/device/${facId}`, { dataType: 'json' });
         const MN = `MN=${deviceInfo.data.Tel.trim()};`;
         const allElement = await this.ctx.curl(`http://115.28.187.9:7001/data/${facId}`, { dataType: 'json' });
-        data += moment(allElement.data.dataTime).format('YYYYMMDDHHmmss');
+        data += moment(new Date()).format('YYYYMMDDHHmmss');
         data += ';';
 
         const dataTime = new Date(allElement.data.dataTime).getTime();
