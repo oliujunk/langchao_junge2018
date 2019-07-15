@@ -20,7 +20,7 @@ class UpdateData extends Subscription {
   static get schedule() {
     return {
       interval: '1m', // 1 分钟间隔
-      type: 'worker', // 指定所有的 worker 都需要执行
+      type: 'worker', // 随机指定一个woker执行一次
     };
   }
 
@@ -94,9 +94,15 @@ class UpdateData extends Subscription {
           data += element;
 
           element = 'a34002-Rtd='; // PM10
-          element += allElement.data.e6;
+          element += allElement.data.e7;
           element += ',';
           element += 'a34002-Flag=N&&';
+          data += element;
+
+          element = 'a01006-Rtd='; // 气压
+          element += allElement.data.e10;
+          element += ',';
+          element += 'a01006-Flag=N&&';
           data += element;
 
           data = ST + CN + PW + MN + data;
