@@ -94,8 +94,8 @@ class UpdateData extends Subscription {
       deviceList.push(...res.data);
     }
 
-    for (let i = 0; i < res.data.length; i++) {
-      const facId = res.data[i].facId;
+    for (let i = 0; i < deviceList.length; i++) {
+      const facId = deviceList[i].facId;
       const head = '8888';
       const xxbm = getRadomNum(8);
       const sjlx = '00';
