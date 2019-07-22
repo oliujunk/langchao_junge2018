@@ -16,7 +16,7 @@ class UpdateData extends Subscription {
   // 通过 schedule 属性来设置定时任务的执行间隔等配置
   static get schedule() {
     return {
-      interval: '5m', // 1 分钟间隔
+      interval: 'm', // 1 分钟间隔
       type: 'worker', // 指定所有的 worker 都需要执行
     };
   }
@@ -88,7 +88,7 @@ class UpdateData extends Subscription {
     }
 
     for (let i = 0, len = userId.length; i < len; i++) {
-      const res = await this.ctx.curl(`http://115.28.187.9:7001/devicelist/${userId}`, {
+      const res = await this.ctx.curl(`http://115.28.187.9:7001/devicelist/${userId[i]}`, {
         dataType: 'json',
       });
       deviceList.push(...res.data);
