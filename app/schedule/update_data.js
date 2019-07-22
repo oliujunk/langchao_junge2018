@@ -6,9 +6,10 @@ const Subscription = require('egg').Subscription;
 const net = require('net');
 const port = 8888;
 const ip = '119.164.253.229';
-const userId = 1048;
+const userId = [ 1048, 1131 ];
 const token = '52376242'; // token
 const sbbh = '03260956'; // ID号前缀
+const deviceList = [];
 
 
 class UpdateData extends Subscription {
@@ -86,9 +87,12 @@ class UpdateData extends Subscription {
       return bytes;
     }
 
-    const res = await this.ctx.curl(`http://115.28.187.9:7001/devicelist/${userId}`, {
-      dataType: 'json',
-    });
+    for (let i = 0, len = userId.length; i < len; i++) {
+      const res = await this.ctx.curl(`http://115.28.187.9:7001/devicelist/${userId}`, {
+        dataType: 'json',
+      });
+      deviceList.push(...res.data);
+    }
 
     for (let i = 0; i < res.data.length; i++) {
       const facId = res.data[i].facId;
