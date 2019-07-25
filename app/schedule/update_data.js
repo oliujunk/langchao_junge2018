@@ -9,8 +9,6 @@ const ip = '119.164.253.229';
 const userId = [ 1048, 1131 ];
 const token = '52376242'; // token
 const sbbh = '03260956'; // ID号前缀
-const deviceList = [];
-
 
 class UpdateData extends Subscription {
   // 通过 schedule 属性来设置定时任务的执行间隔等配置
@@ -86,6 +84,8 @@ class UpdateData extends Subscription {
       }
       return bytes;
     }
+
+    const deviceList = [];
 
     for (let i = 0, len = userId.length; i < len; i++) {
       const res = await this.ctx.curl(`http://115.28.187.9:7001/devicelist/${userId[i]}`, {
