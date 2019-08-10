@@ -94,6 +94,13 @@ class UpdateData extends Subscription {
       deviceList.push(...res.data);
     }
 
+    const standard = await this.ctx.curl(
+      'http://115.28.187.9:7001/standard/531',
+      {
+        dataType: 'json',
+      }
+    );
+
     for (let i = 0; i < deviceList.length; i++) {
       const facId = deviceList[i].facId;
       const head = '8888';
@@ -112,7 +119,9 @@ class UpdateData extends Subscription {
         const dataTime = new Date(dataObj.data.dataTime).getTime();
         if ((new Date().getTime() - dataTime) <= (60 * 60 * 1000)) {
           let element = '0000';
-          let value = parseFloat(dataObj.data.e6) * 10;
+          let value;
+          if (facId === '18000196') value = parseFloat(standard.val1) * 10;
+          else value = parseFloat(dataObj.data.e6) * 10;
           let value1 = 0;
           if (value >= 327670 || value < 0) value1 = 0;
           else value1 = value;
@@ -121,7 +130,8 @@ class UpdateData extends Subscription {
           data += element;
 
           element = '0000';
-          value = parseFloat(dataObj.data.e7) * 10;
+          if (facId === '18000196') value = parseFloat(standard.val2) * 10;
+          else value = parseFloat(dataObj.data.e7) * 10;
           value1 = 0;
           if (value >= 327670 || value < 0) value1 = 0;
           else value1 = value;
