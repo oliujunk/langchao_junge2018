@@ -8,7 +8,7 @@ const moment = require('moment');
 const port = 25333;
 const ip = '114.55.72.120';
 // const ip = '127.0.0.1';
-const userId = 1113;
+const userId = 1210;
 const head = '##';
 const ST = 'ST=39;';
 const CN = 'CN=2011;';
@@ -19,7 +19,7 @@ class UpdateData extends Subscription {
   // 通过 schedule 属性来设置定时任务的执行间隔等配置
   static get schedule() {
     return {
-      interval: '1m', // 1 分钟间隔
+      interval: '4m', // 1 分钟间隔
       type: 'worker', // 随机指定一个woker执行一次
     };
   }
