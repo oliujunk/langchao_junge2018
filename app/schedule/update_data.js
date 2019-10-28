@@ -6,8 +6,8 @@ const Subscription = require('egg').Subscription;
 const net = require('net');
 const port = 8888;
 const ip = '119.164.253.229';
-const userId = 463;
-const token = '76996141';
+const userId = 412;
+const token = '59446439';
 
 class UpdateData extends Subscription {
   // 通过 schedule 属性来设置定时任务的执行间隔等配置
