@@ -42,7 +42,7 @@ class UpdateData extends Subscription {
       return crcReg;
     }
 
-    for (let j = 1; j < userId.length; j++) {
+    for (let j = 0; j < userId.length; j++) {
       const deviceList = await this.ctx.curl(`http://115.28.187.9:7001/devicelist/${userId[j]}`, { dataType: 'json' });
 
       for (let i = 0; i < deviceList.data.length; i++) {
