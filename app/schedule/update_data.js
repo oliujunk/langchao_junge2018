@@ -5,9 +5,9 @@
 const Subscription = require('egg').Subscription;
 const net = require('net');
 const moment = require('moment');
-const port = [ 25333, 4032 ];
-const ip = [ '114.55.72.120', '61.50.135.114' ];
-const userId = [ 1210, 1287 ];
+const port = [ 25333, 4032, 7408 ];
+const ip = [ '114.55.72.120', '61.50.135.114', 'jinan.sdrydzkj.com' ];
+const userId = [ 1210, 1287, 1304 ];
 const head = '##';
 const ST = 'ST=39;';
 const CN = 'CN=2011;';
@@ -81,22 +81,37 @@ class UpdateData extends Subscription {
             element += 'a01002-Flag=N;';
             data += element;
 
-            element = 'Leq-Rtd='; // 噪声
-            element += allElement.data.e5;
-            element += ',';
-            element += 'Leq-Flag=N;';
+            if (j === 2) {
+              element = 'LA-Rtd='; // 噪声
+              element += allElement.data.e5;
+              element += ',';
+              element += 'LA-Flag=N;';
+            } else {
+              element = 'Leq-Rtd='; // 噪声
+              element += allElement.data.e5;
+              element += ',';
+              element += 'Leq-Flag=N;';
+            }
             data += element;
 
             element = 'a34004-Rtd='; // PM2.5
-            element += allElement.data.e6;
+            if (j === 2) {
+              element += allElement.data.e6 * 1000;
+            } else {
+              element += allElement.data.e6;
+            }
             element += ',';
             element += 'a34004-Flag=N;';
             data += element;
 
             element = 'a34002-Rtd='; // PM10
-            element += allElement.data.e7;
+            if (j === 2) {
+              element += allElement.data.e7 * 1000;
+            } else {
+              element += allElement.data.e7;
+            }
             element += ',';
-            element += 'a34002-Flag=N&&';
+            element += 'a34002-Flag=N;';
             data += element;
 
             element = 'a01006-Rtd='; // 气压
@@ -105,7 +120,9 @@ class UpdateData extends Subscription {
             element += 'a01006-Flag=N&&';
             data += element;
 
-            data = ST + CN + PW + MN + data;
+            const QN = `QN=${moment(new Date()).format('YYYYMMDDHHmmssSSS')};`;
+
+            data = QN + ST + CN + PW + MN + data;
             const packLen = ('0000' + data.length).substr(-4);
 
             const crc = getCrc16(Array.from(data).map(item => item.charCodeAt()));
@@ -138,7 +155,6 @@ class UpdateData extends Subscription {
         }
       }
     }
-
   }
 }
 
