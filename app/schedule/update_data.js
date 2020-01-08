@@ -115,7 +115,7 @@ class UpdateData extends Subscription {
             data += element;
 
             element = 'a01006-Rtd='; // 气压
-            element += allElement.data.e10;
+            element += allElement.data.e10 / 100;
             element += ',';
             element += 'a01006-Flag=N&&';
             data += element;
