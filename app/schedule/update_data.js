@@ -6,7 +6,7 @@ const Subscription = require('egg').Subscription;
 const net = require('net');
 const port = 8888;
 const ip = '119.164.253.229';
-const userId = [ 1048, 1131 ];
+const userId = [ 'zhaojun123', 'zhaojun10' ];
 const token = '52376242'; // token
 const sbbh = '03260956'; // ID号前缀
 
@@ -88,18 +88,14 @@ class UpdateData extends Subscription {
     const deviceList = [];
 
     for (let i = 0, len = userId.length; i < len; i++) {
-      const res = await this.ctx.curl(`http://115.28.187.9:7001/devicelist/${userId[i]}`, {
+      const res = await this.ctx.curl(`http://115.28.187.9:8005/user/${userId[i]}`, {
         dataType: 'json',
+        headers: {
+          token: this.ctx.app.token,
+        },
       });
-      deviceList.push(...res.data);
+      deviceList.push(...res.data.devices);
     }
-
-    const standard = await this.ctx.curl(
-      'http://115.28.187.9:7001/standard/531',
-      {
-        dataType: 'json',
-      }
-    );
 
     for (let i = 0; i < deviceList.length; i++) {
       const facId = deviceList[i].facId;
@@ -111,16 +107,19 @@ class UpdateData extends Subscription {
       let data = '000000';
       try {
         const dataObj = await this.ctx.curl(
-          `http://115.28.187.9:7001/data/${facId}`,
+          `http://115.28.187.9:8005/data/${facId}`,
           {
             dataType: 'json',
+            headers: {
+              token: this.ctx.app.token,
+            },
           }
         );
         const dataTime = new Date(dataObj.data.dataTime).getTime();
         if ((new Date().getTime() - dataTime) <= (60 * 60 * 1000)) {
           let element = '0000';
           let value;
-          if (facId === '18000196') value = parseFloat(standard.val1) * 10;
+          if (facId === '18000196') value = parseFloat(40) * 10;
           else value = parseFloat(dataObj.data.e6) * 10;
           let value1 = 0;
           if (value >= 327670 || value < 0) value1 = 0;
@@ -130,7 +129,7 @@ class UpdateData extends Subscription {
           data += element;
 
           element = '0000';
-          if (facId === '18000196') value = parseFloat(standard.val2) * 10;
+          if (facId === '18000196') value = parseFloat(60) * 10;
           else value = parseFloat(dataObj.data.e7) * 10;
           value1 = 0;
           if (value >= 327670 || value < 0) value1 = 0;
