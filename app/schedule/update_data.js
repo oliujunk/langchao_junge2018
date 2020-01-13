@@ -6,7 +6,7 @@ const Subscription = require('egg').Subscription;
 const net = require('net');
 const port = 8888;
 const ip = '119.164.253.229';
-const userId = 412;
+const username = 'junge2018';
 const token = '59446439';
 
 class UpdateData extends Subscription {
@@ -84,12 +84,15 @@ class UpdateData extends Subscription {
       return bytes;
     }
 
-    const res = await this.ctx.curl(`http://115.28.187.9:7001/devicelist/${userId}`, {
+    const res = await this.ctx.curl(`http://115.28.187.9:8005/user/${username}`, {
       dataType: 'json',
+      headers: {
+        token: this.ctx.app.token,
+      },
     });
 
-    for (let i = 0; i < res.data.length; i++) {
-      const facId = res.data[i].facId;
+    for (let i = 0; i < res.data.devices.length; i++) {
+      const facId = res.data.devices[i].facId;
       const head = '8888';
       const xxbm = getRadomNum(8);
       const sbbh = '00000000';
@@ -98,74 +101,71 @@ class UpdateData extends Subscription {
       const end = '0304';
       let data = '000000';
       try {
-        const dataObj = await this.ctx.curl(
-          `http://115.28.187.9:7001/data/${facId}`,
-          {
-            dataType: 'json',
-          }
-        );
+        const dataObj = await this.ctx.curl(`http://115.28.187.9:8005/data/${facId}`, {
+          dataType: 'json',
+          headers: {
+            token: this.ctx.app.token,
+          },
+        });
         const dataTime = new Date(dataObj.data.dataTime).getTime();
         if ((new Date().getTime() - dataTime) <= (60 * 60 * 1000)) {
           let element = '0000';
           let value = parseFloat(dataObj.data.e6) * 10;
-          let value1 = 0;
-          if (value >= 327670 || value < 0) value1 = 0;
-          else value1 = value;
-          element += (value1 < 6000 ? value1 : 400).toString(16);
+          if (value >= 327670 || value < 0) value = 0;
+          else if (value > 6000) value = 400;
+          // else if (value < parseFloat(standard.data.val1) * 10 * 0.875) {
+          //   value = parseFloat(standard.data.val1) * 10;
+          // }
+          value = value - 50 + Math.ceil(Math.random() * 100);
+          element += value.toString(16);
           element = element.substring(element.length - 4);
           data += element;
 
           element = '0000';
           value = parseFloat(dataObj.data.e7) * 10;
-          value1 = 0;
-          if (value >= 327670 || value < 0) value1 = 0;
-          else value1 = value;
-          element += (value1 < 6000 ? value1 : 900).toString(16);
+          if (value >= 327670 || value < 0) value = 0;
+          else if (value > 6000) value = 900;
+          // else if (value < parseFloat(standard.data.val2) * 10 * 0.875) {
+          //   value = parseFloat(standard.data.val2) * 10;
+          // }
+          value = value - 50 + Math.ceil(Math.random() * 100);
+          element += value.toString(16);
           element = element.substring(element.length - 4);
           data += element;
 
           element = '0000';
           value = parseFloat(dataObj.data.e5) * 10;
-          value1 = 0;
-          if (value >= 327670 || value < 0) value1 = 0;
-          else value1 = value;
-          element += value1.toString(16);
+          if (value >= 327670 || value < 0) value = 0;
+          element += value.toString(16);
           element = element.substring(element.length - 4);
           data += element;
 
           element = '0000';
           value = parseFloat(dataObj.data.e2) * 10;
-          value1 = 0;
-          if (value >= 327670 || value < 0) value1 = 0;
-          else value1 = value;
-          element += value1.toString(16);
+          if (value >= 327670 || value < 0) value = 0;
+          element += value.toString(16);
           element = element.substring(element.length - 4);
           data += element;
 
           element = '0000';
           value = parseFloat(dataObj.data.e1) * 10;
-          value1 = 0;
-          if (value >= 327670 || value < 0) value1 = 0;
-          else value1 = value;
-          element += value1.toString(16);
+          if (value >= 327670 || value < 0) value = 0;
+          element += value.toString(16);
           element = element.substring(element.length - 4);
           data += element;
 
           element = '0000';
-          value = Math.abs(parseFloat(dataObj.data.e3)) * 10;
-          value1 = 0;
-          if (value >= 327670 || value < 0) value1 = 0;
-          else value1 = value;
-          element += value1.toString(16);
+          value = parseFloat(dataObj.data.e3) * 10;
+          if (value >= 327670) value = 0;
+          else if (value < 0) value = Math.abs(value) + 0x8000;
+          element += value.toString(16);
           element = element.substring(element.length - 4);
           data += element;
 
           element = '0000';
           value = parseFloat(dataObj.data.e4) * 10;
-          value1 = 0;
-          if (value >= 327670 || value < 0) value1 = 0;
-          else value1 = value;
-          element += value1.toString(16);
+          if (value >= 327670 || value < 0) value = 0;
+          element += value.toString(16);
           element = element.substring(element.length - 4);
           data += element;
 
