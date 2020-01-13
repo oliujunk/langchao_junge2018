@@ -7,7 +7,7 @@ const net = require('net');
 const moment = require('moment');
 const port = [ 25333, 4032, 7408 ];
 const ip = [ '114.55.72.120', '61.50.135.114', 'jinan.sdrydzkj.com' ];
-const userId = [ 1210, 1287, 1304 ];
+const userId = [ 'wuhanyc', 'wuhanxdl', 'jnhb212' ];
 const head = '##';
 const ST = 'ST=39;';
 const CN = 'CN=2011;';
@@ -43,15 +43,24 @@ class UpdateData extends Subscription {
     }
 
     for (let j = 0; j < userId.length; j++) {
-      const deviceList = await this.ctx.curl(`http://115.28.187.9:7001/devicelist/${userId[j]}`, { dataType: 'json' });
+      const deviceList = await this.ctx.curl(`http://115.28.187.9:8005/user/${userId[j]}`, {
+        dataType: 'json',
+        headers: {
+          token: this.ctx.app.token,
+        },
+      });
 
-      for (let i = 0; i < deviceList.data.length; i++) {
-        const facId = deviceList.data[i].facId;
+      for (let i = 0; i < deviceList.data.devices.length; i++) {
+        const facId = deviceList.data.devices[i].facId;
         let data = 'CP=&&DataTime=';
         try {
-          const deviceInfo = await this.ctx.curl(`http://115.28.187.9:7001/device/${facId}`, { dataType: 'json' });
-          const MN = `MN=${deviceInfo.data.Tel.trim()};`;
-          const allElement = await this.ctx.curl(`http://115.28.187.9:7001/data/${facId}`, { dataType: 'json' });
+          const MN = `MN=${deviceList.data.devices[i].updateTime};`;
+          const allElement = await this.ctx.curl(`http://115.28.187.9:8005/data/${facId}`, {
+            dataType: 'json',
+            headers: {
+              token: this.ctx.app.token,
+            },
+          });
           data += moment(new Date()).format('YYYYMMDDHHmmss');
           data += ';';
 
