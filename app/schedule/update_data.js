@@ -134,7 +134,7 @@ class UpdateData extends Subscription {
           data += element;
 
           element = '0000';
-          value = parseFloat(dataObj.data.e5) * 10;
+          value = parseFloat(dataObj.data.e5);
           if (value >= 327670 || value < 0) value = 0;
           element += value.toString(16);
           element = element.substring(element.length - 4);
@@ -148,14 +148,14 @@ class UpdateData extends Subscription {
           data += element;
 
           element = '0000';
-          value = parseFloat(dataObj.data.e1) * 10;
+          value = parseFloat(dataObj.data.e1);
           if (value >= 327670 || value < 0) value = 0;
           element += value.toString(16);
           element = element.substring(element.length - 4);
           data += element;
 
           element = '0000';
-          value = parseFloat(dataObj.data.e3) * 10;
+          value = parseFloat(dataObj.data.e3);
           if (value >= 327670) value = 0;
           else if (value < 0) value = Math.abs(value) + 0x8000;
           element += value.toString(16);
@@ -163,7 +163,7 @@ class UpdateData extends Subscription {
           data += element;
 
           element = '0000';
-          value = parseFloat(dataObj.data.e4) * 10;
+          value = parseFloat(dataObj.data.e4);
           if (value >= 327670 || value < 0) value = 0;
           element += value.toString(16);
           element = element.substring(element.length - 4);
