@@ -11,7 +11,7 @@ module.exports = appInfo => {
 
   config.cluster = {
     listen: {
-      port: 7003,
+      port: 7004,
       hostname: '127.0.0.1',
       // path: '/var/run/egg.sock',
     },

@@ -6,14 +6,14 @@ const Subscription = require('egg').Subscription;
 const net = require('net');
 const port = 8888;
 const ip = '119.164.253.229';
-const username = 'junge2018';
-const token = '59446439';
+const username = 'jungeyc';
+const token = '76996141';
 
 class UpdateData extends Subscription {
   // 通过 schedule 属性来设置定时任务的执行间隔等配置
   static get schedule() {
     return {
-      interval: '5m', // 1 分钟间隔
+      interval: '4m', // 1 分钟间隔
       type: 'worker', // 指定所有的 worker 都需要执行
     };
   }
@@ -134,7 +134,7 @@ class UpdateData extends Subscription {
           data += element;
 
           element = '0000';
-          value = parseFloat(dataObj.data.e5) * 10;
+          value = parseFloat(dataObj.data.e5);
           if (value >= 327670 || value < 0) value = 0;
           element += value.toString(16);
           element = element.substring(element.length - 4);
@@ -148,14 +148,14 @@ class UpdateData extends Subscription {
           data += element;
 
           element = '0000';
-          value = parseFloat(dataObj.data.e1) * 10;
+          value = parseFloat(dataObj.data.e1);
           if (value >= 327670 || value < 0) value = 0;
           element += value.toString(16);
           element = element.substring(element.length - 4);
           data += element;
 
           element = '0000';
-          value = parseFloat(dataObj.data.e3) * 10;
+          value = parseFloat(dataObj.data.e3);
           if (value >= 327670) value = 0;
           else if (value < 0) value = Math.abs(value) + 0x8000;
           element += value.toString(16);
@@ -163,7 +163,7 @@ class UpdateData extends Subscription {
           data += element;
 
           element = '0000';
-          value = parseFloat(dataObj.data.e4) * 10;
+          value = parseFloat(dataObj.data.e4);
           if (value >= 327670 || value < 0) value = 0;
           element += value.toString(16);
           element = element.substring(element.length - 4);
