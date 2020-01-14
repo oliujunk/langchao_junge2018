@@ -118,68 +118,62 @@ class UpdateData extends Subscription {
         const dataTime = new Date(dataObj.data.dataTime).getTime();
         if ((new Date().getTime() - dataTime) <= (60 * 60 * 1000)) {
           let element = '0000';
-          let value;
-          if (facId === '18000196') value = parseFloat(40) * 10;
-          else value = parseFloat(dataObj.data.e6) * 10;
-          let value1 = 0;
-          if (value >= 327670 || value < 0) value1 = 0;
-          else value1 = value;
-          element += (value1 < 6000 ? value1 : 400).toString(16);
+          let value = parseFloat(dataObj.data.e6) * 10;
+          if (value >= 327670 || value < 0) value = 0;
+          else if (value > 6000) value = 400;
+          // else if (value < parseFloat(standard.data.val1) * 10 * 0.875) {
+          //   value = parseFloat(standard.data.val1) * 10;
+          // }
+          value = value - 50 + Math.ceil(Math.random() * 100);
+          element += value.toString(16);
           element = element.substring(element.length - 4);
           data += element;
 
           element = '0000';
-          if (facId === '18000196') value = parseFloat(60) * 10;
-          else value = parseFloat(dataObj.data.e7) * 10;
-          value1 = 0;
-          if (value >= 327670 || value < 0) value1 = 0;
-          else value1 = value;
-          element += (value1 < 6000 ? value1 : 900).toString(16);
+          value = parseFloat(dataObj.data.e7) * 10;
+          if (value >= 327670 || value < 0) value = 0;
+          else if (value > 6000) value = 900;
+          // else if (value < parseFloat(standard.data.val2) * 10 * 0.875) {
+          //   value = parseFloat(standard.data.val2) * 10;
+          // }
+          value = value - 50 + Math.ceil(Math.random() * 100);
+          element += value.toString(16);
           element = element.substring(element.length - 4);
           data += element;
 
           element = '0000';
-          value = parseFloat(dataObj.data.e5) * 10;
-          value1 = 0;
-          if (value >= 327670 || value < 0) value1 = 0;
-          else value1 = value;
-          element += value1.toString(16);
+          value = parseFloat(dataObj.data.e5);
+          if (value >= 327670 || value < 0) value = 0;
+          element += value.toString(16);
           element = element.substring(element.length - 4);
           data += element;
 
           element = '0000';
           value = parseFloat(dataObj.data.e2) * 10;
-          value1 = 0;
-          if (value >= 327670 || value < 0) value1 = 0;
-          else value1 = value;
-          element += value1.toString(16);
+          if (value >= 327670 || value < 0) value = 0;
+          element += value.toString(16);
           element = element.substring(element.length - 4);
           data += element;
 
           element = '0000';
-          value = parseFloat(dataObj.data.e1) * 10;
-          value1 = 0;
-          if (value >= 327670 || value < 0) value1 = 0;
-          else value1 = value;
-          element += value1.toString(16);
+          value = parseFloat(dataObj.data.e1);
+          if (value >= 327670 || value < 0) value = 0;
+          element += value.toString(16);
           element = element.substring(element.length - 4);
           data += element;
 
           element = '0000';
-          value = Math.abs(parseFloat(dataObj.data.e3)) * 10;
-          value1 = 0;
-          if (value >= 327670 || value < 0) value1 = 0;
-          else value1 = value;
-          element += value1.toString(16);
+          value = parseFloat(dataObj.data.e3);
+          if (value >= 327670) value = 0;
+          else if (value < 0) value = Math.abs(value) + 0x8000;
+          element += value.toString(16);
           element = element.substring(element.length - 4);
           data += element;
 
           element = '0000';
-          value = parseFloat(dataObj.data.e4) * 10;
-          value1 = 0;
-          if (value >= 327670 || value < 0) value1 = 0;
-          else value1 = value;
-          element += value1.toString(16);
+          value = parseFloat(dataObj.data.e4);
+          if (value >= 327670 || value < 0) value = 0;
+          element += value.toString(16);
           element = element.substring(element.length - 4);
           data += element;
 
