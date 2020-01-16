@@ -54,7 +54,7 @@ class UpdateData extends Subscription {
         const facId = deviceList.data.devices[i].facId;
         let data = 'CP=&&DataTime=';
         try {
-          const MN = `MN=${deviceList.data.devices[i].updateTime};`;
+          const MN = `MN=${deviceList.data.devices[i].remark};`;
           const allElement = await this.ctx.curl(`http://115.28.187.9:8005/data/${facId}`, {
             dataType: 'json',
             headers: {
