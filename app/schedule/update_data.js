@@ -67,7 +67,7 @@ class UpdateData extends Subscription {
           const dataTime = new Date(allElement.data.dataTime).getTime();
           if ((new Date().getTime() - dataTime) <= (60 * 60 * 1000)) {
             let element = 'a01007-Rtd='; // 风速
-            element += allElement.data.e1;
+            element += allElement.data.e1 / 10;
             element += ',';
             element += 'a01007-Flag=N;';
             data += element;
@@ -79,25 +79,25 @@ class UpdateData extends Subscription {
             data += element;
 
             element = 'a01001-Rtd='; // 温度
-            element += allElement.data.e3;
+            element += allElement.data.e3 / 10;
             element += ',';
             element += 'a01001-Flag=N;';
             data += element;
 
             element = 'a01002-Rtd='; // 湿度
-            element += allElement.data.e4;
+            element += allElement.data.e4 / 10;
             element += ',';
             element += 'a01002-Flag=N;';
             data += element;
 
             if (j === 2) {
               element = 'LA-Rtd='; // 噪声
-              element += allElement.data.e5;
+              element += allElement.data.e5 / 10;
               element += ',';
               element += 'LA-Flag=N;';
             } else {
               element = 'Leq-Rtd='; // 噪声
-              element += allElement.data.e5;
+              element += allElement.data.e5 / 10;
               element += ',';
               element += 'Leq-Flag=N;';
             }
