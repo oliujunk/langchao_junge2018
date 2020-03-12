@@ -5,14 +5,14 @@
 const Subscription = require('egg').Subscription;
 const net = require('net');
 const moment = require('moment');
-const port = [ 25333, 4032, 7408 ];
-const ip = [ '114.55.72.120', '61.50.135.114', 'jinan.sdrydzkj.com' ];
-const userId = [ 'wuhanyc', 'wuhanxdl', 'jnhb212' ];
+const port = [ 25333, 4032, 7408, 7408 ];
+const ip = [ '114.55.72.120', '61.50.135.114', 'jinan.sdrydzkj.com', 'zl.glodon.com' ];
+const userId = [ 'wuhanyc', 'wuhanxdl', 'jnhb212', 'guanglianda' ];
 const head = '##';
 const ST = 'ST=39;';
 const CN = 'CN=2011;';
-const PW = 'PW=123456;';
-
+let MN = '';
+let PW = '';
 
 class UpdateData extends Subscription {
   // 通过 schedule 属性来设置定时任务的执行间隔等配置
@@ -54,7 +54,14 @@ class UpdateData extends Subscription {
         const facId = deviceList.data.devices[i].facId;
         let data = 'CP=&&DataTime=';
         try {
-          const MN = `MN=${deviceList.data.devices[i].remark};`;
+          if (j === 3) {
+            const temp = deviceList.data.devices[i].remark.split('&');
+            MN = `MN=${temp[0]};`;
+            PW = `PW=${temp[1]};`;
+          } else {
+            MN = `MN=${deviceList.data.devices[i].remark};`;
+            PW = 'PW=123456;';
+          }
           const allElement = await this.ctx.curl(`http://115.28.187.9:8005/data/${facId}`, {
             dataType: 'json',
             headers: {
@@ -65,7 +72,7 @@ class UpdateData extends Subscription {
           data += ';';
 
           const dataTime = new Date(allElement.data.dataTime).getTime();
-          if ((new Date().getTime() - dataTime) <= (60 * 60 * 1000)) {
+          if ((new Date().getTime() - dataTime) <= (5 * 60 * 60 * 1000)) {
             let element = 'a01007-Rtd='; // 风速
             element += allElement.data.e1 / 10;
             element += ',';
@@ -90,7 +97,7 @@ class UpdateData extends Subscription {
             element += 'a01002-Flag=N;';
             data += element;
 
-            if (j === 2) {
+            if (j >= 2) {
               element = 'LA-Rtd='; // 噪声
               element += allElement.data.e5 / 10;
               element += ',';
@@ -104,7 +111,7 @@ class UpdateData extends Subscription {
             data += element;
 
             element = 'a34004-Rtd='; // PM2.5
-            if (j === 2) {
+            if (j >= 2) {
               element += allElement.data.e6 * 1000;
             } else {
               element += allElement.data.e6;
@@ -114,7 +121,7 @@ class UpdateData extends Subscription {
             data += element;
 
             element = 'a34002-Rtd='; // PM10
-            if (j === 2) {
+            if (j >= 2) {
               element += allElement.data.e7 * 1000;
             } else {
               element += allElement.data.e7;
