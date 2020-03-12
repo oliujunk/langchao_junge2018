@@ -4,9 +4,9 @@
 
 const Subscription = require('egg').Subscription;
 const net = require('net');
-const port = 8888;
-const ip = '119.164.253.229';
-const username = 'junge2018';
+const port = 8099;
+const ip = '60.208.94.146';
+const username = 'jiyang';
 const token = '59446439';
 
 class UpdateData extends Subscription {
