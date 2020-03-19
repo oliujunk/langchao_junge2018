@@ -1,5 +1,3 @@
-/* eslint-disable no-bitwise */
-/* eslint-disable no-extend-native */
 'use strict';
 
 const Subscription = require('egg').Subscription;
