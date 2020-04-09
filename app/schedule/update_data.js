@@ -156,7 +156,7 @@ class UpdateData extends Subscription {
 
           element = '0000';
           value = parseFloat(dataObj.data.e3);
-          if (value >= 32767) value = 0;
+          if (value >= 32767 || value === -395) value = 0;
           else if (value < 0) value = Math.abs(value) + 0x8000;
           element += value.toString(16);
           element = element.substring(element.length - 4);
