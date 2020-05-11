@@ -1,5 +1,5 @@
 {
-  "name": "whhbj",
+  "name": "changzhi",
   "version": "1.0.0",
   "description": "",
   "private": true,
@@ -22,8 +22,8 @@
     "node": ">=8.9.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --title=egg-server-whhbj",
-    "stop": "egg-scripts stop --title=egg-server-whhbj",
+    "start": "egg-scripts start --daemon --title=egg-server-changzhi",
+    "stop": "egg-scripts stop --title=egg-server-changzhi",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",
     "test": "npm run lint -- --fix && npm run test-local",

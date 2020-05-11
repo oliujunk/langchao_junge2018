@@ -5,20 +5,28 @@
 const Subscription = require('egg').Subscription;
 const net = require('net');
 const moment = require('moment');
-const port = [ 25333, 4032, 7408, 7408 ];
-const ip = [ '114.55.72.120', '61.50.135.114', 'jinan.sdrydzkj.com', 'zl.glodon.com' ];
-const userId = [ 'wuhanyc', 'wuhanxdl', 'jnhb212', 'guanglianda' ];
+const port = [ 7102 ];
+const ip = [ '111.53.98.26' ];
+const userId = [ 'changzhi' ];
+const client = new Array(20);
 const head = '##';
-const ST = 'ST=39;';
+const ST = 'ST=22;';
 const CN = 'CN=2011;';
 let MN = '';
 let PW = '';
+
+const isEmpty = obj => {
+  if (typeof obj === 'undefined' || obj == null || obj === '') {
+    return true;
+  }
+  return false;
+};
 
 class UpdateData extends Subscription {
   // 通过 schedule 属性来设置定时任务的执行间隔等配置
   static get schedule() {
     return {
-      interval: '4m', // 4分钟间隔
+      interval: '5m', // 4分钟间隔
       type: 'worker', // 随机指定一个woker执行一次
     };
   }
@@ -54,14 +62,9 @@ class UpdateData extends Subscription {
         const facId = deviceList.data.devices[i].facId;
         let data = 'CP=&&DataTime=';
         try {
-          if (j === 3) {
-            const temp = deviceList.data.devices[i].remark.split('&');
-            MN = `MN=${temp[0]};`;
-            PW = `PW=${temp[1]};`;
-          } else {
-            MN = `MN=${deviceList.data.devices[i].remark};`;
-            PW = 'PW=123456;';
-          }
+          const temp = deviceList.data.devices[i].remark.split('&');
+          MN = `MN=${temp[0]};`;
+          PW = `PW=${temp[1]};`;
           const allElement = await this.ctx.curl(`http://115.28.187.9:8005/data/${facId}`, {
             dataType: 'json',
             headers: {
@@ -146,25 +149,98 @@ class UpdateData extends Subscription {
 
             const message = head + packLen + data + crcStr + '\r\n';
 
-            const client = new net.Socket();
-            client.setEncoding('utf8');
-            setTimeout(function() {
-              client.connect(
-                port[j],
-                ip[j],
-                function() {
-                  console.log(`[${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')}]-发送数据: ${message}`);
-                  client.write(message);
-                  client.on('data', function(data) {
-                    console.log(`[${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')}]-接收数据: ${data.toString('hex')}`);
-                  });
-                  // 2秒后关闭与服务器的连接
-                  setTimeout(function() {
-                    client.destroy();
-                  }, 2000);
+            if (isEmpty(client[i])) {
+              const socket = new net.Socket();
+              socket.connect(port[j], ip[j], () => {
+                console.log(`[${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')}]-发送数据: ${message}`);
+              });
+              socket.on('data', data => {
+                const recvMessage = data.toString('ascii');
+                console.log(`[${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')}]-接收数据: ${recvMessage}`);
+                try {
+                  const field = recvMessage.split(';');
+                  if (field.some(item => item === 'CN=1011')) {
+                    let ans1 = `QN=${moment().format('YYYYMMDDHHmmssSSS')};`;
+                    ans1 += 'ST=91;';
+                    ans1 += 'CN=9011;';
+                    ans1 += `MN=${temp[0]};`;
+                    ans1 += `PW=${temp[1]};`;
+                    ans1 += 'Flag=4;';
+                    ans1 += 'CP=&&QnRtn=1&&';
+                    const packLen = ('0000' + ans1.length).substr(-4);
+
+                    const crc = getCrc16(Array.from(ans1).map(item => item.charCodeAt()));
+                    const crcStr = ('0000' + crc.toString(16)).substr(-4).toUpperCase();
+
+                    const message = head + packLen + ans1 + crcStr + '\r\n';
+                    console.log(`[${moment().format('YYYY-MM-DD HH:mm:ss')}]-发送数据: ${message}`);
+                    socket.write(message);
+                    setTimeout(() => {
+                      let ans2 = `QN=${moment().format('YYYYMMDDHHmmssSSS')};`;
+                      ans2 += 'ST=22;';
+                      ans2 += 'CN=1011;';
+                      ans2 += `MN=${temp[0]};`;
+                      ans2 += `PW=${temp[1]};`;
+                      ans2 += 'Flag=4;';
+                      ans2 += `CP=&&SystemTime=${moment().format('YYYYMMDDHHmmss')}&&`;
+                      const packLen = ('0000' + ans2.length).substr(-4);
+
+                      const crc = getCrc16(Array.from(ans2).map(item => item.charCodeAt()));
+                      const crcStr = ('0000' + crc.toString(16)).substr(-4).toUpperCase();
+
+                      const message = head + packLen + ans2 + crcStr + '\r\n';
+                      console.log(`[${moment().format('YYYY-MM-DD HH:mm:ss')}]-发送数据: ${message}`);
+                      socket.write(message);
+                    }, 50);
+                    setTimeout(() => {
+                      let ans3 = `QN=${moment().format('YYYYMMDDHHmmssSSS')};`;
+                      ans3 += 'ST=91;';
+                      ans3 += 'CN=9012;';
+                      ans3 += `MN=${temp[0]};`;
+                      ans3 += `PW=${temp[1]};`;
+                      ans3 += 'Flag=4;';
+                      ans3 += 'CP=&&ExeRtn=1&&';
+                      const packLen = ('0000' + ans3.length).substr(-4);
+
+                      const crc = getCrc16(Array.from(ans3).map(item => item.charCodeAt()));
+                      const crcStr = ('0000' + crc.toString(16)).substr(-4).toUpperCase();
+
+                      const message = head + packLen + ans3 + crcStr + '\r\n';
+                      console.log(`[${moment().format('YYYY-MM-DD HH:mm:ss')}]-发送数据: ${message}`);
+                      socket.write(message);
+                    }, 100);
+                  } else if (field.some(item => item === 'CN=1100')) {
+                    let ans3 = `QN=${moment().format('YYYYMMDDHHmmssSSS')};`;
+                    ans3 += 'ST=91;';
+                    ans3 += 'CN=9011;';
+                    ans3 += `MN=${temp[0]};`;
+                    ans3 += `PW=${temp[1]};`;
+                    ans3 += 'Flag=4;';
+                    ans3 += 'CP=&&QnRtn=1&&';
+                    const packLen = ('0000' + ans3.length).substr(-4);
+
+                    const crc = getCrc16(Array.from(ans3).map(item => item.charCodeAt()));
+                    const crcStr = ('0000' + crc.toString(16)).substr(-4).toUpperCase();
+
+                    const message = head + packLen + ans3 + crcStr + '\r\n';
+                    console.log(`[${moment().format('YYYY-MM-DD HH:mm:ss')}]-发送数据: ${message}`);
+                    socket.write(message);
+                  }
+                } catch (e) {
+                  console.error(e.message);
                 }
-              );
-            }, (i / 2) * 1000);
+              });
+              socket.on('close', () => {
+                client[i] = null;
+              });
+              socket.on('error', () => {
+                client[i] = null;
+              });
+              client[i] = socket;
+            }
+            if (!isEmpty(client[i])) {
+              client[i].write(message);
+            }
           }
         } catch (err) {
           console.log(`[${facId}]获取数据失败`);
