@@ -26,7 +26,7 @@ class UpdateData extends Subscription {
   // 通过 schedule 属性来设置定时任务的执行间隔等配置
   static get schedule() {
     return {
-      interval: '5m', // 4分钟间隔
+      interval: '5m', // 分钟间隔
       type: 'worker', // 随机指定一个woker执行一次
     };
   }
@@ -152,15 +152,16 @@ class UpdateData extends Subscription {
             if (isEmpty(client[i])) {
               const socket = new net.Socket();
               socket.connect(port[j], ip[j], () => {
-                console.log(`[${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')}]-发送数据: ${message}`);
+                console.log('已连接');
               });
               socket.on('data', data => {
                 const recvMessage = data.toString('ascii');
-                console.log(`[${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')}]-接收数据: ${recvMessage}`);
+                console.log(`[${moment().format('YYYY-MM-DD HH:mm:ss')}]-接收数据: ${recvMessage}`);
                 try {
                   const field = recvMessage.split(';');
+                  const QNData = field[0].substr(-17);
                   if (field.some(item => item === 'CN=1011')) {
-                    let ans1 = `QN=${moment().format('YYYYMMDDHHmmssSSS')};`;
+                    let ans1 = `QN=${QNData};`;
                     ans1 += 'ST=91;';
                     ans1 += 'CN=9011;';
                     ans1 += `MN=${temp[0]};`;
@@ -176,7 +177,7 @@ class UpdateData extends Subscription {
                     console.log(`[${moment().format('YYYY-MM-DD HH:mm:ss')}]-发送数据: ${message}`);
                     socket.write(message);
                     setTimeout(() => {
-                      let ans2 = `QN=${moment().format('YYYYMMDDHHmmssSSS')};`;
+                      let ans2 = `QN=${QNData};`;
                       ans2 += 'ST=22;';
                       ans2 += 'CN=1011;';
                       ans2 += `MN=${temp[0]};`;
@@ -191,9 +192,9 @@ class UpdateData extends Subscription {
                       const message = head + packLen + ans2 + crcStr + '\r\n';
                       console.log(`[${moment().format('YYYY-MM-DD HH:mm:ss')}]-发送数据: ${message}`);
                       socket.write(message);
-                    }, 50);
+                    }, 100);
                     setTimeout(() => {
-                      let ans3 = `QN=${moment().format('YYYYMMDDHHmmssSSS')};`;
+                      let ans3 = `QN=${QNData};`;
                       ans3 += 'ST=91;';
                       ans3 += 'CN=9012;';
                       ans3 += `MN=${temp[0]};`;
@@ -208,9 +209,9 @@ class UpdateData extends Subscription {
                       const message = head + packLen + ans3 + crcStr + '\r\n';
                       console.log(`[${moment().format('YYYY-MM-DD HH:mm:ss')}]-发送数据: ${message}`);
                       socket.write(message);
-                    }, 100);
+                    }, 200);
                   } else if (field.some(item => item === 'CN=1100')) {
-                    let ans3 = `QN=${moment().format('YYYYMMDDHHmmssSSS')};`;
+                    let ans3 = `QN=${QNData};`;
                     ans3 += 'ST=91;';
                     ans3 += 'CN=9011;';
                     ans3 += `MN=${temp[0]};`;
@@ -240,6 +241,7 @@ class UpdateData extends Subscription {
             }
             if (!isEmpty(client[i])) {
               client[i].write(message);
+              console.log(`[${moment().format('YYYY-MM-DD HH:mm:ss')}]-发送数据: ${message}`);
             }
           }
         } catch (err) {
