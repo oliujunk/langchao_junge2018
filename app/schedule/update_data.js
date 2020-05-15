@@ -183,7 +183,7 @@ class UpdateData extends Subscription {
           const message = temp + xorResult.toString(16) + end;
 
           const client = new net.Socket();
-          client.setEncoding('utf8');
+          // client.setEncoding('utf8');
           setTimeout(function() {
             client.connect(
               port,
