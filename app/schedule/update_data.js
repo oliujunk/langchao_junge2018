@@ -114,21 +114,13 @@ class UpdateData extends Subscription {
             data += element;
 
             element = 'a34004-Rtd='; // PM2.5
-            if (j >= 2) {
-              element += allElement.data.e6 * 1000;
-            } else {
-              element += allElement.data.e6;
-            }
+            element += allElement.data.e6 * 1000;
             element += ',';
             element += 'a34004-Flag=N;';
             data += element;
 
             element = 'a34002-Rtd='; // PM10
-            if (j >= 2) {
-              element += allElement.data.e7 * 1000;
-            } else {
-              element += allElement.data.e7;
-            }
+            element += allElement.data.e7 * 1000;
             element += ',';
             element += 'a34002-Flag=N;';
             data += element;
@@ -239,10 +231,8 @@ class UpdateData extends Subscription {
               });
               client[i] = socket;
             }
-            if (!isEmpty(client[i])) {
-              client[i].write(message);
-              console.log(`[${moment().format('YYYY-MM-DD HH:mm:ss')}]-发送数据: ${message}`);
-            }
+            client[i].write(message);
+            console.log(`[${moment().format('YYYY-MM-DD HH:mm:ss')}]-发送数据: ${message}`);
           }
         } catch (err) {
           console.log(`[${facId}]获取数据失败`);
