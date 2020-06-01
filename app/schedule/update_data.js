@@ -26,7 +26,7 @@ class UpdateData extends Subscription {
   // 通过 schedule 属性来设置定时任务的执行间隔等配置
   static get schedule() {
     return {
-      interval: '5m', // 分钟间隔
+      interval: '1m', // 分钟间隔
       type: 'worker', // 随机指定一个woker执行一次
     };
   }
@@ -58,7 +58,8 @@ class UpdateData extends Subscription {
         },
       });
 
-      for (let i = 0; i < deviceList.data.devices.length; i++) {
+      // for (let i = 0; i < deviceList.data.devices.length; i++) {
+      for (let i = 1; i < 2; i++) {
         const facId = deviceList.data.devices[i].facId;
         let data = 'CP=&&DataTime=';
         try {
@@ -100,29 +101,28 @@ class UpdateData extends Subscription {
             element += 'a01002-Flag=N;';
             data += element;
 
-            if (j >= 2) {
-              element = 'LA-Rtd='; // 噪声
-              element += allElement.data.e5 / 10;
-              element += ',';
-              element += 'LA-Flag=N;';
-            } else {
-              element = 'Leq-Rtd='; // 噪声
-              element += allElement.data.e5 / 10;
-              element += ',';
-              element += 'Leq-Flag=N;';
-            }
+            element = 'LA-Rtd='; // 噪声
+            element += allElement.data.e5 / 10;
+            element += ',';
+            element += 'LA-Flag=N;';
             data += element;
 
             element = 'a34004-Rtd='; // PM2.5
-            element += allElement.data.e6 * 1000;
+            element += allElement.data.e6;
             element += ',';
             element += 'a34004-Flag=N;';
             data += element;
 
             element = 'a34002-Rtd='; // PM10
-            element += allElement.data.e7 * 1000;
+            element += allElement.data.e7;
             element += ',';
             element += 'a34002-Flag=N;';
+            data += element;
+
+            element = 'a34001-Rtd='; // TSP 用 5mPM10代替
+            element += allElement.data.e9 * 1.1;
+            element += ',';
+            element += 'a34001-Flag=N;';
             data += element;
 
             element = 'a01006-Rtd='; // 气压
@@ -144,7 +144,7 @@ class UpdateData extends Subscription {
             if (isEmpty(client[i])) {
               const socket = new net.Socket();
               socket.connect(port[j], ip[j], () => {
-                console.log('已连接');
+                console.warn('重新连接');
               });
               socket.on('data', data => {
                 const recvMessage = data.toString('ascii');
@@ -225,9 +225,10 @@ class UpdateData extends Subscription {
               });
               socket.on('close', () => {
                 client[i] = null;
+                console.error('连接关闭');
               });
               socket.on('error', () => {
-                client[i] = null;
+                console.error('连接错误');
               });
               client[i] = socket;
             }
