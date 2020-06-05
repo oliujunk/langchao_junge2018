@@ -31,6 +31,9 @@ class UpdateToken extends Subscription {
       const client = new net.Socket();
       client.connect(8888, '119.164.253.229', () => {
         console.log('连接成功');
+        setInterval(() => {
+          client.write('0D0A');
+        }, 5000);
         client.on('close', () => {
           setTimeout(() => {
             console.log('断开重连');
