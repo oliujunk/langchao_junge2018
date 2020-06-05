@@ -1,14 +1,11 @@
 'use strict';
 
 const Subscription = require('egg').Subscription;
-const net = require('net');
-const port = 8888;
-const ip = '119.164.253.229';
+const moment = require('moment');
 const username = 'junge2018';
 const token = '59446439';
 
 class UpdateData extends Subscription {
-  // 通过 schedule 属性来设置定时任务的执行间隔等配置
   static get schedule() {
     return {
       interval: '5m', // 1 分钟间隔
@@ -18,43 +15,6 @@ class UpdateData extends Subscription {
 
   // subscribe 是真正定时任务执行时被运行的函数
   async subscribe() {
-    Date.prototype.Format = function(fmt) {
-      // author: meizz
-      const o = {
-        'M+': this.getMonth() + 1,
-        'd+': this.getDate(),
-        'H+': this.getHours(),
-        'm+': this.getMinutes(),
-        's+': this.getSeconds(),
-        'q+': Math.floor((this.getMonth() + 3) / 3),
-        S: this.getMilliseconds(),
-      };
-      const year = this.getFullYear();
-      let yearstr = year + '';
-      yearstr =
-        yearstr.length >= 4
-          ? yearstr
-          : '0000'.substr(0, 4 - yearstr.length) + yearstr;
-
-      if (/(y+)/.test(fmt)) {
-        fmt = fmt.replace(
-          RegExp.$1,
-          (yearstr + '').substr(4 - RegExp.$1.length)
-        );
-      }
-      for (const k in o) {
-        if (new RegExp('(' + k + ')').test(fmt)) {
-          fmt = fmt.replace(
-            RegExp.$1,
-            RegExp.$1.length === 1
-              ? o[k]
-              : ('00' + o[k]).substr(('' + o[k]).length)
-          );
-        }
-      }
-      return fmt;
-    };
-
     function getRadomNum(capacity) {
       const chars = [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ];
       let res = '';
@@ -170,9 +130,9 @@ class UpdateData extends Subscription {
           data += '0000000000000000';
 
           const timestamp = Date.parse(new Date());
-          data += new Date(timestamp - 5 * 60 * 1000).Format('yyyyMMddHHmm');
-          data += new Date().Format('yyyyMMddHHmm');
-          data += new Date().Format('yyyyMMddHHmm');
+          data += moment(new Date(timestamp - 5 * 60 * 1000)).format('YYYYMMDDHHmm');
+          data += moment().format('YYYYMMDDHHmm');
+          data += moment().format('YYYYMMDDHHmm');
 
           const temp = head + xxbm + sbbh + facId + token + sjlx + data + bysj;
 
@@ -180,30 +140,16 @@ class UpdateData extends Subscription {
           const xorResult = getXor(dataBytes);
           const message = temp + xorResult.toString(16) + end;
 
-          const client = new net.Socket();
-          client.setEncoding('utf8');
-          setTimeout(function() {
-            client.connect(
-              port,
-              ip,
-              function() {
-                console.log(
-                  `[${new Date()}]发送数据[${message.toUpperCase()}]`
-                );
-                const buffer = Buffer.from(stringToByte(message));
-                client.write(buffer);
-                client.on('data', function(data) {
-                  console.log(`接收数据[${data.toString('hex')}]`);
-                });
-                // 指定10秒后关闭与服务器的连接
-                setTimeout(function() {
-                  // 客户端的socket端口对象可以调用end方法来结束与服务端的连接，同时服务端添加end事件的监听事件即可。
-                  console.log('断开连接');
-                  client.destroy();
-                }, 2000);
-              }
-            );
-          }, (i / 2) * 1000);
+          const buffer = Buffer.from(stringToByte(message));
+          setTimeout(() => {
+            const client = this.ctx.app.client[(Math.ceil(Math.random() * 100)) % 5];
+            if (client.writable) {
+              console.log(`[${facId}][${moment().format('YYYY-MM-DD HH:mm:ss')}]发送数据[${message.toUpperCase()}]`);
+              client.write(buffer);
+            } else {
+              console.log(`[${facId}][${moment().format('YYYY-MM-DD HH:mm:ss')}]连接不可用`);
+            }
+          }, (i / 2) * 500);
         }
       } catch (err) {
         console.log(`[${facId}]获取数据失败`);

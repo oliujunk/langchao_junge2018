@@ -1,6 +1,7 @@
 'use strict';
 
 const Subscription = require('egg').Subscription;
+const net = require('net');
 
 class UpdateToken extends Subscription {
   // 通过 schedule 属性来设置定时任务的执行间隔等配置
@@ -25,6 +26,33 @@ class UpdateToken extends Subscription {
       dataType: 'json',
     });
     this.ctx.app.token = res.data.token;
+    this.ctx.app.client = [];
+    for (let i = 0; i < 5; i++) {
+      const client = new net.Socket();
+      client.connect(8888, '119.164.253.229', () => {
+        console.log('连接成功');
+        client.on('close', () => {
+          setTimeout(() => {
+            console.log('断开重连');
+            client.connect(8888, '119.164.253.229');
+          }, 5000);
+        });
+        client.on('error', error => {
+          console.error(error);
+        });
+        client.on('data', data => {
+          console.log(`接收数据[${data.toString('hex')}]`);
+        });
+      });
+      client.on('error', () => {
+        setTimeout(() => {
+          console.log('错误重连');
+          client.connect(8888, '119.164.253.229');
+        }, 5000);
+      });
+      client.setKeepAlive(true);
+      this.ctx.app.client.push(client);
+    }
   }
 }
 
