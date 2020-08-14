@@ -68,7 +68,7 @@ class UpdateData extends Subscription {
           // const dataTime = new Date(allElement.data.dataTime).getTime();
           // if ((new Date().getTime() - dataTime) <= (5 * 60 * 60 * 1000)) {
           let element = 'a01007-Rtd='; // 风速
-          element += allElement.data.e1 / 10;
+          element += (allElement.data.e1 / 10).toFixed(1);
           element += ',';
           element += 'a01007-Flag=N;';
           data += element;
@@ -80,19 +80,19 @@ class UpdateData extends Subscription {
           data += element;
 
           element = 'a01001-Rtd='; // 温度
-          element += allElement.data.e3 / 10;
+          element += (allElement.data.e3 / 10).toFixed(1);
           element += ',';
           element += 'a01001-Flag=N;';
           data += element;
 
           element = 'a01002-Rtd='; // 湿度
-          element += allElement.data.e9 / 10;
+          element += (allElement.data.e9 / 10).toFixed(1);
           element += ',';
           element += 'a01002-Flag=N;';
           data += element;
 
           element = 'LA-Rtd='; // 噪声
-          element += allElement.data.e8 / 10;
+          element += (allElement.data.e8 / 10).toFixed(1);
           element += ',';
           element += 'LA-Flag=N;';
           data += element;
@@ -102,7 +102,7 @@ class UpdateData extends Subscription {
           if (value >= 32767 || value <= 0) {
             value = 20 + Math.ceil(Math.random() * 20);
           }
-          element += value;
+          element += value.toFixed(1);
           element += ',';
           element += 'a34004-Flag=N;';
           data += element;
@@ -112,13 +112,13 @@ class UpdateData extends Subscription {
           if (value >= 32767 || value <= 0) {
             value = 40 + Math.ceil(Math.random() * 20);
           }
-          element += value;
+          element += value.toFixed(1);
           element += ',';
           element += 'a34002-Flag=N;';
           data += element;
 
           element = 'a01006-Rtd='; // 气压
-          element += allElement.data.e5 / 100;
+          element += (allElement.data.e5 / 100).toFixed(1);
           element += ',';
           element += 'a01006-Flag=N&&';
           data += element;
