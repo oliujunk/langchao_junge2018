@@ -138,7 +138,8 @@ class UpdateData extends Subscription {
 
           const dataBytes = stringToByte(temp);
           const xorResult = getXor(dataBytes);
-          const message = temp + xorResult.toString(16) + end;
+          const xorStr = ('00' + xorResult.toString(16)).slice(-2);
+          const message = temp + xorStr + end;
 
           const buffer = Buffer.from(stringToByte(message));
           setTimeout(() => {
